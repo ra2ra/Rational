@@ -29,18 +29,24 @@ public class Rational {
 
     public void setNumerator(int numerator) {
         this.numerator = numerator;
+        reduce();
     }
 
     public void setDenominator(int denominator) {
         this.denominator = denominator;
+        reduce();
     }
 
-    public String asString() {
+    @Override
+    public String toString() {
         return String.join("/", String.valueOf(numerator), String.valueOf(denominator));
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
         Rational rational = (Rational)obj;
         return (this.numerator == rational.numerator && this.denominator == rational.denominator);
     }
@@ -75,9 +81,7 @@ public class Rational {
     }
 
     public Rational minus(Rational rational) {
-        return this.plus(
-                rational.multiply( new Rational(-1, 1) )
-        );
+        return this.plus( rational.multiply( new Rational(-1, 1) ) );
     }
 
     public Rational divide(Rational rational) {
@@ -88,9 +92,9 @@ public class Rational {
     }
 
     private void reduce() {
-        int nod = getNOD();
-        numerator /= nod;
-        denominator /= nod;
+        int gcd = getGCD();
+        numerator /= gcd;
+        denominator /= gcd;
 
         if (numerator == 0) {
             denominator = 1;
@@ -99,7 +103,7 @@ public class Rational {
         simplifyMinuses();
     }
 
-    private int getNOD() {
+    private int getGCD() {
         int n = abs(numerator);
         int d = abs(denominator);
 
